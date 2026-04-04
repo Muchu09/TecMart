@@ -66,8 +66,6 @@ export default function ItemDetails() {
     };
 
     if (id) fetchItem();
-
-    if (id) fetchItem();
   }, [id]);
 
   /* ─── Wishlist ───────────────────────────────────── */

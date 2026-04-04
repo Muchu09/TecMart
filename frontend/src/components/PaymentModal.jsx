@@ -58,7 +58,7 @@ export default function PaymentModal({ item, isOpen, onClose, onSuccess }) {
               <p className="text-sm text-gray-500">{item.category}</p>
             </div>
             <div className="text-right">
-              <div className="font-bold text-lg text-blue-600">${(item.price || 99.00).toFixed(2)}</div>
+              <div className="font-bold text-lg text-blue-600">₹{(item.price || 0).toLocaleString('en-IN')}</div>
             </div>
           </div>
 
@@ -197,7 +197,7 @@ export default function PaymentModal({ item, isOpen, onClose, onSuccess }) {
              ) : (
                <span className="flex items-center gap-2">
                  <ShieldCheck size={20} />
-                 Pay ${(item.price || 99.00).toFixed(2)}
+                 Pay ?{(item.price || 0).toLocaleString('en-IN')}
                </span>
              )}
            </button>
