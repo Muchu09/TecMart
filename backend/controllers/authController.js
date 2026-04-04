@@ -74,6 +74,11 @@ const register = async (req, res, next) => {
  * @access  Public
  */
 const login = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ success: false, message: errors.array()[0].msg });
+  }
+
   const email = req.body.email?.trim();
   const password = req.body.password;
 

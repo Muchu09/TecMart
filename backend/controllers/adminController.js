@@ -13,29 +13,34 @@ exports.adminLogin = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required' });
+    }
+
     const envAdminEmail = process.env.ADMIN_EMAIL?.trim();
-    const envAdminPass = process.env.ADMIN_PASSWORD?.trim();
+    const envAdminHash = process.env.ADMIN_PASSWORD_HASH?.trim();
 
     const cleanEmail = email?.trim();
-    const cleanPassword = password?.trim();
 
     let user = await User.findOne({ email: cleanEmail });
 
-    // 1. Check if it matches Super Admin credentials from .env
-    const isEnvMatch = (envAdminEmail && cleanEmail === envAdminEmail) && (envAdminPass && cleanPassword === envAdminPass);
+    // 1. Check if it matches Super Admin credentials from .env (using bcrypt hash)
+    let isEnvMatch = false;
+    if (envAdminEmail && envAdminHash && cleanEmail === envAdminEmail) {
+      isEnvMatch = await bcrypt.compare(password, envAdminHash);
+    }
 
     if (isEnvMatch) {
-      // If matches .env but user doesn't exist in DB, create a skeletal one or find by email
+      // If matches .env but user doesn't exist in DB, create a skeletal one
       if (!user) {
         user = new User({
           username: 'SystemAdmin',
           email: envAdminEmail,
-          password: await bcrypt.hash(envAdminPass, 10),
+          password: envAdminHash,
           role: 'admin'
         });
         await user.save();
       } else if (user.role !== 'admin') {
-        // Upgrade user to admin if they match .env
         user.role = 'admin';
         await user.save();
       }

@@ -20,6 +20,9 @@ router.post('/register', [
 // @route   POST /api/auth/login
 // @desc    Login user
 // @access  Public
-router.post('/login', login);
+router.post('/login', [
+  body('email', 'Please include a valid email').isEmail().normalizeEmail(),
+  body('password', 'Password is required').notEmpty().trim(),
+], login);
 
 module.exports = router;
