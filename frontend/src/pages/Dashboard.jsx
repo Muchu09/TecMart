@@ -65,13 +65,25 @@ export default function Dashboard() {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    if (!passForm.current) {
+      showToast("Please enter your current password.", "error");
+      return;
+    }
+    if (passForm.newPassword.length < 6) {
+      showToast("New password must be at least 6 characters.", "error");
+      return;
+    }
     try {
-      await usersAPI.updateProfile({ password: passForm.newPassword });
+      await usersAPI.updateProfile({
+        password: passForm.newPassword,
+        currentPassword: passForm.current,
+      });
       setChangingPassword(false);
       setPassForm({ current: "", newPassword: "" });
       showToast("Password updated successfully.");
     } catch (err) {
-      showToast("Failed to update password.", "error");
+      const msg = err.response?.data?.message || "Failed to update password.";
+      showToast(msg, "error");
     }
   };
 

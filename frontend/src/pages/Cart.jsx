@@ -428,10 +428,10 @@ function OrderConfirmation({ order, onContinue }) {
           </button>
           <button
             className="cp-confirm-track-btn"
-            onClick={() => alert("Order tracking coming soon!")}
+            onClick={() => navigate('/dashboard')}
           >
             <Truck size={15} style={{ marginRight: 6 }} />
-            Track Order
+            View My Orders
           </button>
         </div>
       </div>
